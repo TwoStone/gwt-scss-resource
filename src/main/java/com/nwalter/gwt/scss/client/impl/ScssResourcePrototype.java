@@ -1,63 +1,47 @@
 package com.nwalter.gwt.scss.client.impl;
 
-import com.nwalter.gwt.scss.client.ScssResource;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
-import com.google.gwt.dom.client.LinkElement;
-import com.google.gwt.dom.client.Text;
 import com.google.gwt.safehtml.shared.SafeUri;
+import com.nwalter.gwt.scss.client.LinkInjector;
+import com.nwalter.gwt.scss.client.ScssResource;
 
+/**
+ * Simple implementation of {@link ScssResource}.
+ */
 public class ScssResourcePrototype implements ScssResource {
 
-	private String name;
-	private SafeUri uri; 
-	private boolean injected;
-	private HeadElement head;
-	
-	public ScssResourcePrototype(String name, SafeUri uri) {
-		super();
-		this.name = name;
-		this.uri = uri;
-	}
-	
-	@VisibleForTesting
-	public SafeUri getUri() {
-		return uri;
-	}
+    private String name;
+    private SafeUri uri;
+    private boolean injected;
+    private HeadElement head;
 
-	@Override
-	public String getName() {
-		return name;
-	}
-	
-	@Override
-	public boolean ensureInjected() {
-		if (!injected) {
-			injected = true;
-			injectAsLink(uri);
-			return true;
-		}
-		return false;
-	}
+    /**
+     * Only called by rebind code
+     */
+    public ScssResourcePrototype(String name, SafeUri uri) {
+        super();
+        this.name = name;
+        this.uri = uri;
+    }
 
-	private void injectAsLink(SafeUri href) {
-		Text comment = Document.get().createTextNode("<!-- " + name + " -->");
-		getHead().appendChild(comment);
-		LinkElement link = Document.get().createLinkElement();
-		link.setHref(href.asString());
-		link.setRel("stylesheet");
-		getHead().appendChild(link);
-	}
-	
-	private HeadElement getHead() {
-	      if (head == null) {
-	        Element elt = Document.get().getElementsByTagName(HeadElement.TAG).getItem(0);
-	        assert elt != null : "The host HTML page does not have a <head> element"
-	            + " which is required by StyleInjector";
-	        head = HeadElement.as(elt);
-	      }
-	      return head;
-	    }
+    @VisibleForTesting
+    public SafeUri getUri() {
+        return uri;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public boolean ensureInjected() {
+        if (!injected) {
+            injected = true;
+            LinkInjector.injectLink(this.uri, "stylesheet");
+            return true;
+        }
+        return false;
+    }
 }
