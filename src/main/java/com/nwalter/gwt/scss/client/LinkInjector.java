@@ -23,7 +23,10 @@ public class LinkInjector {
     /**
      * Injects a link element in the head of the document.
      *
-     * @return the injected {@link LinkElement}
+     * @param href the uri of the resource
+     * @param rel the rel of the resource
+     *
+     * @return the injected LinkElement
      */
     public LinkElement inject(SafeUri href, String rel) {
         LinkElement link = Document.get().createLinkElement();

@@ -25,12 +25,12 @@ import java.net.URL;
 import java.nio.file.Files;
 
 /**
- * {@link ResourceGenerator} implementation that compiles and minifies ScssResources to CSS.
+ * ResourceGenerator implementation that compiles and minifies ScssResources to CSS.
  */
 public class ScssBundleGenerator extends AbstractResourceGenerator implements ResourceGenerator {
 
     /**
-     * {@link SCSSErrorHandler} that delegates messages to the {@link TreeLogger}.
+     * {@link SCSSErrorHandler} that delegates messages to the TreeLogger.
      */
     private static class GwtErrorHandler extends SCSSErrorHandler {
 

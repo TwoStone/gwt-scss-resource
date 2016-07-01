@@ -18,6 +18,8 @@ public class ScssResourcePrototype implements ScssResource {
 
     /**
      * Only called by rebind code
+     * @param name the name of the resource
+     * @param uri the uri of the resource
      */
     public ScssResourcePrototype(String name, SafeUri uri) {
         super();
