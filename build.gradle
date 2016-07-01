@@ -4,11 +4,15 @@ buildscript {
     }
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
+        classpath 'net.researchgate:gradle-release:2.4.0'
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'gwt-base'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'net.researchgate.release'
 
 group = 'org.github.twostone.gwt'
 version = '1.0.0'
@@ -28,4 +32,10 @@ dependencies {
 
 gwt {
 	gwtVersion = '2.5.1'
+}
+
+jar {
+    from(sourceSets.main.allSource) {
+        include 'de/set/web/gwt/scss/client/**'
+    }
 }
