@@ -3,8 +3,8 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit//EN" "http://gwtproject.org/doctype/2.7.0/gwt-module.dtd">
 <module>
 	<inherits name="com.google.gwt.user.User" />
-	<inherits name="de.set.web.gwt.scss.ScssResource"/>
+	<inherits name="com.nwalter.gwt.scss.ScssResource"/>
 	<source path="client"/>
 	
-	<entry-point class="de.set.web.gwt.sass.test.client.SassTestModule"/>
+	<entry-point class="com.nwalter.gwt.scss.client.SassTestModule"/>
 </module>

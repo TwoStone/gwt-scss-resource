@@ -1,8 +1,7 @@
-package de.set.web.gwt.scss.client;
+package com.nwalter.gwt.scss.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import de.set.web.gwt.scss.client.ScssResource;
 
 public class ScssTestModule implements EntryPoint {
 

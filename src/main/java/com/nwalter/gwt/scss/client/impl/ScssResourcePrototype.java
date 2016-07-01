@@ -1,5 +1,6 @@
-package de.set.web.gwt.scss.client.impl;
+package com.nwalter.gwt.scss.client.impl;
 
+import com.nwalter.gwt.scss.client.ScssResource;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -7,7 +8,6 @@ import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.dom.client.LinkElement;
 import com.google.gwt.dom.client.Text;
 import com.google.gwt.safehtml.shared.SafeUri;
-import de.set.web.gwt.scss.client.ScssResource;
 
 public class ScssResourcePrototype implements ScssResource {
 

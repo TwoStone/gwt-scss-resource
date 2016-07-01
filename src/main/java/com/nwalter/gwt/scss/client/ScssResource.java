@@ -1,9 +1,9 @@
-package de.set.web.gwt.scss.client;
+package com.nwalter.gwt.scss.client;
 
 import com.google.gwt.resources.client.ResourcePrototype;
 import com.google.gwt.resources.ext.DefaultExtensions;
 import com.google.gwt.resources.ext.ResourceGeneratorType;
-import de.set.web.gwt.scss.generator.ScssBundleGenerator;
+import com.nwalter.gwt.scss.generator.ScssBundleGenerator;
 
 @DefaultExtensions({".scss", ".sass"})
 @ResourceGeneratorType(ScssBundleGenerator.class)

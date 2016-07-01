@@ -1,4 +1,4 @@
-package de.set.web.gwt.scss.client;
+package com.nwalter.gwt.scss.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -7,13 +7,13 @@ import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.dom.client.LinkElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.junit.client.GWTTestCase;
-import de.set.web.gwt.scss.client.impl.ScssResourcePrototype;
+import com.nwalter.gwt.scss.client.impl.ScssResourcePrototype;
 
 public class ScssModuleTest extends GWTTestCase {
 
 	@Override
 	public String getModuleName() {
-		return "de.set.web.gwt.scss.ScssTestModule";
+		return "com.nwalter.gwt.scss.ScssTestModule";
 	}
 	
 	public void testInjectInDocument() {

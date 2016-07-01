@@ -1,5 +1,6 @@
-package de.set.web.gwt.scss.generator;
+package com.nwalter.gwt.scss.generator;
 
+import com.nwalter.gwt.scss.client.impl.ScssResourcePrototype;
 import com.google.gwt.codegen.server.SourceWriter;
 import com.google.gwt.codegen.server.StringSourceWriter;
 import com.google.gwt.core.ext.TreeLogger;
@@ -14,7 +15,6 @@ import com.google.gwt.safehtml.shared.UriUtils;
 import com.vaadin.sass.internal.ScssStylesheet;
 import com.vaadin.sass.internal.handler.SCSSDocumentHandlerImpl;
 import com.vaadin.sass.internal.handler.SCSSErrorHandler;
-import de.set.web.gwt.scss.client.impl.ScssResourcePrototype;
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.CSSParseException;
 
