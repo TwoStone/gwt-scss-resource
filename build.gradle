@@ -3,12 +3,14 @@ buildscript {
         jcenter()
     }
     dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
         classpath 'net.researchgate:gradle-release:2.4.0'
     }
 }
 
 apply plugin: 'java'
+apply plugin: 'gwt-base'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'net.researchgate.release'
@@ -29,12 +31,11 @@ dependencies {
 	compile 'com.vaadin:vaadin-sass-compiler:0.9.13'
 	compile 'com.google.guava:guava:17.0'
 
-    compile "com.google.gwt:gwt-dev:${gwtVersion}"
-    compileOnly "com.google.gwt:gwt-user:${gwtVersion}"
-    runtime "com.google.gwt:gwt-servlet:${gwtVersion}"
-
 	testCompile 'junit:junit:4.12'
-    testCompile "com.google.gwt:gwt-user:${gwtVersion}"
+}
+
+gwt {
+    gwtVersion = project.gwtVersion
 }
 
 task sourceJar(type: Jar) {
