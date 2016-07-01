@@ -2,14 +2,10 @@ package com.nwalter.gwt.scss.rebind;
 
 import com.google.gwt.codegen.server.SourceWriter;
 import com.google.gwt.codegen.server.StringSourceWriter;
-import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.*;
 import com.google.gwt.core.ext.TreeLogger.Type;
-import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JMethod;
-import com.google.gwt.resources.ext.AbstractResourceGenerator;
-import com.google.gwt.resources.ext.ResourceContext;
-import com.google.gwt.resources.ext.ResourceGenerator;
-import com.google.gwt.resources.ext.ResourceGeneratorUtil;
+import com.google.gwt.resources.ext.*;
 import com.google.gwt.safehtml.shared.UriUtils;
 import com.nwalter.gwt.scss.client.impl.ScssResourcePrototype;
 import com.vaadin.sass.internal.ScssStylesheet;
@@ -59,14 +55,37 @@ public class ScssBundleGenerator extends AbstractResourceGenerator implements Re
         }
     }
 
+    private static final String MINIFY_KEY = "scss.minify";
+
+    @Override
+    public void init(TreeLogger logger, ResourceContext context) throws UnableToCompleteException {
+        ClientBundleRequirements requirements = context.getRequirements();
+        try {
+            requirements.addConfigurationProperty(MINIFY_KEY);
+        } catch (BadPropertyValueException e) {
+            logger.log(Type.ERROR, e.getMessage(), e);
+            throw new UnableToCompleteException();
+        }
+    }
+
     @Override
     public String createAssignment(TreeLogger logger, ResourceContext context, JMethod method)
             throws UnableToCompleteException {
+
         URL[] resources = ResourceGeneratorUtil.findResources(logger, context, method);
 
+        if (resources.length != 1) {
+            logger.log(Type.ERROR, "Exactly one resource must be specified");
+            throw new UnableToCompleteException();
+        }
+
         try {
+            PropertyOracle propertyOracle = context.getGeneratorContext().getPropertyOracle();
+            String minifyProperty = propertyOracle.getConfigurationProperty(MINIFY_KEY).getValues().get(0);
+            boolean minify = Boolean.parseBoolean(minifyProperty);
+
             File input = new File(resources[0].toURI());
-            File outputFile = compileScsss(logger, input);
+            File outputFile = compileScss(logger, input, minify);
 
             String result = context.deploy(outputFile.toURI().toURL(), "text/css", true);
 
@@ -86,7 +105,7 @@ public class ScssBundleGenerator extends AbstractResourceGenerator implements Re
         }
     }
 
-    private File compileScsss(TreeLogger logger, File input) throws Exception {
+    private File compileScss(TreeLogger logger, File input, boolean minify) throws Exception {
         ScssStylesheet stylesheet = ScssStylesheet.get(
                 input.getCanonicalPath(),
                 null,
@@ -96,7 +115,7 @@ public class ScssBundleGenerator extends AbstractResourceGenerator implements Re
 
         File tempFile = Files.createTempFile("gwt-sass", ".css").toFile();
         try (Writer w = new FileWriter(tempFile)) {
-            stylesheet.write(w);
+            stylesheet.write(w, minify);
         }
         return tempFile;
     }

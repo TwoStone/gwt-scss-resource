@@ -3,4 +3,9 @@
 <module>
 	<inherits name="com.google.gwt.resources.Resources" />
 	<source path="client"/>
+
+    <define-configuration-property name="scss.minify" is-multi-valued="false" />
+	<set-configuration-property name="scss.minify" value="false"/>
+
+
 </module>
