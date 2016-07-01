@@ -1,0 +1,10 @@
+@import '_child';
+
+.style {
+    background-color: white;
+    color: #ccc;
+    
+    .substyle {
+        background-color: black;
+    }
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Could not determine the version of your GWT SDK; using the module DTD from GWT 1.6.4. You may want to change this. -->
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit//EN" "http://gwtproject.org/doctype/2.7.0/gwt-module.dtd">
+<module>
+	<inherits name="com.google.gwt.user.User" />
+	<inherits name="de.set.web.gwt.sass.SassResource"/>
+	<source path="client"/>
+	
+	<entry-point class="de.set.web.gwt.sass.test.client.SassTestModule"/>
+</module>

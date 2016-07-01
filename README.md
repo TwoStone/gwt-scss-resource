@@ -1,0 +1,1 @@
+# gwt-sass-resource
