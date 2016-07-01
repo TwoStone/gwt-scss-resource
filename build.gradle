@@ -16,7 +16,6 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: 'net.researchgate.release'
 
 group = 'com.nwalter.gwt'
-version = '1.0.0-SNAPSHOT'
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
 
