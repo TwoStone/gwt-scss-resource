@@ -1,7 +1,10 @@
-/.gradle/
-/build/
-/gradle/
-/gwt-unitCache/
-/www-test/
+.gradle/
+build/
+gwt-unitCache/
+www-test/
 .settings/
 bin/
+.idea/
+.classpath
+.project
+war/
