@@ -5,6 +5,4 @@
 	<inherits name="com.google.gwt.user.User" />
 	<inherits name="com.nwalter.gwt.scss.ScssResource"/>
 	<source path="client"/>
-	
-	<entry-point class="com.nwalter.gwt.scss.client.SassTestModule"/>
 </module>
