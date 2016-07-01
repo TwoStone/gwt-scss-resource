@@ -1,1 +1,1 @@
-# gwt-sass-resource
+# gwt-scss-resource
