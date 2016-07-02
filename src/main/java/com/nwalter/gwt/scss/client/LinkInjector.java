@@ -12,37 +12,39 @@ import com.google.gwt.safehtml.shared.SafeUri;
  */
 public class LinkInjector {
 
-    private static final LinkInjector IMPL = GWT.create(LinkInjector.class);
+  private static final LinkInjector IMPL = GWT.create(LinkInjector.class);
 
-    private HeadElement head;
+  private HeadElement head;
 
-    public static LinkElement injectLink(SafeUri href, String rel) {
-        return LinkInjector.IMPL.inject(href, rel);
+  public static LinkElement injectLink(SafeUri href, String rel) {
+    return LinkInjector.IMPL.inject(href, rel);
+  }
+
+  /**
+   * Injects a link element in the head of the document.
+   *
+   * @param href
+   *          the uri of the resource
+   * @param rel
+   *          the rel of the resource
+   *
+   * @return the injected LinkElement
+   */
+  public LinkElement inject(SafeUri href, String rel) {
+    LinkElement link = Document.get().createLinkElement();
+    link.setHref(href.asString());
+    link.setRel(rel);
+    getHead().appendChild(link);
+    return link;
+  }
+
+  private HeadElement getHead() {
+    if (head == null) {
+      Element elt = Document.get().getElementsByTagName(HeadElement.TAG).getItem(0);
+      assert elt != null : "The host HTML page does not have a <head> element"
+          + " which is required by StyleInjector";
+      head = HeadElement.as(elt);
     }
-
-    /**
-     * Injects a link element in the head of the document.
-     *
-     * @param href the uri of the resource
-     * @param rel the rel of the resource
-     *
-     * @return the injected LinkElement
-     */
-    public LinkElement inject(SafeUri href, String rel) {
-        LinkElement link = Document.get().createLinkElement();
-        link.setHref(href.asString());
-        link.setRel(rel);
-        getHead().appendChild(link);
-        return link;
-    }
-
-    private HeadElement getHead() {
-        if (head == null) {
-            Element elt = Document.get().getElementsByTagName(HeadElement.TAG).getItem(0);
-            assert elt != null : "The host HTML page does not have a <head> element"
-                    + " which is required by StyleInjector";
-            head = HeadElement.as(elt);
-        }
-        return head;
-    }
+    return head;
+  }
 }
