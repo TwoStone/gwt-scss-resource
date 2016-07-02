@@ -6,9 +6,6 @@ import java.io.Writer;
 import java.net.URL;
 import java.nio.file.Files;
 
-import org.w3c.css.sac.CSSException;
-import org.w3c.css.sac.CSSParseException;
-
 import com.google.gwt.codegen.server.SourceWriter;
 import com.google.gwt.codegen.server.StringSourceWriter;
 import com.google.gwt.core.ext.BadPropertyValueException;
@@ -23,45 +20,16 @@ import com.google.gwt.resources.ext.ResourceContext;
 import com.google.gwt.resources.ext.ResourceGenerator;
 import com.google.gwt.resources.ext.ResourceGeneratorUtil;
 import com.google.gwt.safehtml.shared.UriUtils;
+import com.nwalter.gwt.scss.client.ScssResource.IncludePaths;
 import com.nwalter.gwt.scss.client.impl.ScssResourcePrototype;
 import com.vaadin.sass.internal.ScssStylesheet;
 import com.vaadin.sass.internal.handler.SCSSDocumentHandlerImpl;
-import com.vaadin.sass.internal.handler.SCSSErrorHandler;
+import com.vaadin.sass.internal.resolver.FilesystemResolver;
 
 /**
  * ResourceGenerator implementation that compiles and minifies ScssResources to CSS.
  */
 public class ScssBundleGenerator extends AbstractResourceGenerator implements ResourceGenerator {
-
-  /**
-   * {@link SCSSErrorHandler} that delegates messages to the TreeLogger.
-   */
-  private static class GwtErrorHandler extends SCSSErrorHandler {
-
-    private TreeLogger logger;
-
-    private GwtErrorHandler(TreeLogger logger) {
-      this.logger = logger;
-    }
-
-    @Override
-    public void error(CSSParseException ex) throws CSSException {
-      super.error(ex);
-      logger.log(Type.ERROR, ex.getMessage(), ex);
-    }
-
-    @Override
-    public void warning(CSSParseException ex) throws CSSException {
-      super.warning(ex);
-      logger.log(Type.WARN, ex.getMessage(), ex);
-    }
-
-    @Override
-    public void fatalError(CSSParseException ex) throws CSSException {
-      super.fatalError(ex);
-      logger.log(Type.ERROR, ex.getMessage(), ex);
-    }
-  }
 
   private static final String MINIFY_KEY = "scss.minify";
 
@@ -92,9 +60,15 @@ public class ScssBundleGenerator extends AbstractResourceGenerator implements Re
       String minifyProperty = propertyOracle.getConfigurationProperty(MINIFY_KEY).getValues()
           .get(0);
       boolean minify = Boolean.parseBoolean(minifyProperty);
+      
+      String[] customPaths = null;
+      IncludePaths includePaths = method.getAnnotation(IncludePaths.class);
+      if (includePaths != null) {
+        customPaths = includePaths.value();
+      }
 
       File input = new File(resources[0].toURI());
-      File outputFile = compileScss(logger, input, minify);
+      File outputFile = compileScss(logger, input, minify, customPaths);
 
       String result = context.deploy(outputFile.toURI().toURL(), "text/css", true);
 
@@ -114,9 +88,19 @@ public class ScssBundleGenerator extends AbstractResourceGenerator implements Re
     }
   }
 
-  private File compileScss(TreeLogger logger, File input, boolean minify) throws Exception {
+  private File compileScss(
+      final TreeLogger logger, 
+      final File input, 
+      final boolean minify, 
+      final String[] customPaths) throws Exception {
+    
     ScssStylesheet stylesheet = ScssStylesheet.get(input.getCanonicalPath(), null,
         new SCSSDocumentHandlerImpl(), new GwtErrorHandler(logger));
+    
+    if (customPaths != null) {
+      stylesheet.addResolver(new FilesystemResolver(customPaths));
+    }
+    
     stylesheet.compile();
 
     File tempFile = Files.createTempFile("gwt-sass", ".css").toFile();
