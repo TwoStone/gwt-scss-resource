@@ -3,3 +3,5 @@ language: java
 jdk:
   - oraclejdk7
   
+after_success:
+  - test "${TRAVIS_PULL_REQUEST}" == "false" && test "${TRAVIS_JDK_VERSION}" == "oraclejdk7" && test "${TRAVIS_TAG}" != "" && ./gradlew bintrayUpload
