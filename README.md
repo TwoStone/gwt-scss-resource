@@ -3,7 +3,7 @@
 The gwt-scss-resource is a GWT resource implementation for using SASS/SCSS files as resources in GWT ClientBundles.
 
 ## Usage
-For using the scss resource in your gwt project you have to do two things:
+For using the scss resource in your gwt project you have to do the following steps:
 
 * add the gwt-scss-resource jar to your gwt classpath.
 When you use a build tools with depenedencies management you can get it from jcenter
