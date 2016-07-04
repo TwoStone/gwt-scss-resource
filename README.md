@@ -28,8 +28,6 @@ dependencies {
 * add the gwt-scss-resource-module to your module xml 
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit//EN" "http://gwtproject.org/doctype/2.7.0/gwt-module.dtd">
 <module>
   ...
   <inherits name="com.nwalter.gwt.scss.ScssResource" />
