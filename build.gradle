@@ -63,8 +63,6 @@ publishing {
 
 bintrayUpload.dependsOn 'generatePomFileForMavenPublication'
 
-afterReleaseBuild.dependsOn 'bintrayUpload'
-
 bintray {
     user = project.hasProperty('bintray.user') ? project.property('bintray.user') : System.getenv('BINTRAY_USER')
     key = project.hasProperty('bintray.key') ? project.property('bintray.key') : System.getenv('BINTRAY_KEY')
