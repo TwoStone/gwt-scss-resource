@@ -45,7 +45,7 @@ task sourceJar(type: Jar) {
 
 jar {
     from(sourceSets.main.allSource) {
-        include 'de/set/web/gwt/scss/client/**'
+        include 'com/nwalter/gwt/scss/client/**'
     }
 }
 
