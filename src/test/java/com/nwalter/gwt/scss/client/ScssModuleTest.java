@@ -29,5 +29,9 @@ public class ScssModuleTest extends GWTTestCase {
     assertEquals(link.getRel(), "stylesheet");
     assertTrue(link.getHref().endsWith(sass.getUri().asString()));
   }
+  
+  public void testMissingBracketError() {
+    GWT.create(TestClientBundle.class);
+  }
 
 }

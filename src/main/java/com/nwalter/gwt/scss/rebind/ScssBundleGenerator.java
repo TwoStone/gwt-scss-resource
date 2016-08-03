@@ -95,7 +95,7 @@ public class ScssBundleGenerator extends AbstractResourceGenerator implements Re
       final String[] customPaths) throws Exception {
     
     ScssStylesheet stylesheet = ScssStylesheet.get(input.getCanonicalPath(), null,
-        new SCSSDocumentHandlerImpl(), new GwtErrorHandler(logger));
+        new SCSSDocumentHandlerImpl(), new GwtErrorHandler(logger, input));
     
     if (customPaths != null) {
       stylesheet.addResolver(new FilesystemResolver(customPaths));
