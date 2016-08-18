@@ -21,7 +21,10 @@ import com.google.gwt.resources.ext.ResourceGenerator;
 import com.google.gwt.resources.ext.ResourceGeneratorUtil;
 import com.google.gwt.safehtml.shared.UriUtils;
 import com.nwalter.gwt.scss.client.ScssResource.IncludePaths;
+import com.nwalter.gwt.scss.client.ScssResource.SassUrlMode;
+import com.nwalter.gwt.scss.client.ScssResource.UrlMode;
 import com.nwalter.gwt.scss.client.impl.ScssResourcePrototype;
+import com.vaadin.sass.internal.ScssContext;
 import com.vaadin.sass.internal.ScssStylesheet;
 import com.vaadin.sass.internal.handler.SCSSDocumentHandlerImpl;
 import com.vaadin.sass.internal.resolver.FilesystemResolver;
@@ -34,21 +37,21 @@ public class ScssBundleGenerator extends AbstractResourceGenerator implements Re
   private static final String MINIFY_KEY = "scss.minify";
 
   @Override
-  public void init(TreeLogger logger, ResourceContext context) throws UnableToCompleteException {
-    ClientBundleRequirements requirements = context.getRequirements();
+  public void init(final TreeLogger logger, final ResourceContext context) throws UnableToCompleteException {
+    final ClientBundleRequirements requirements = context.getRequirements();
     try {
       requirements.addConfigurationProperty(MINIFY_KEY);
-    } catch (BadPropertyValueException ex) {
+    } catch (final BadPropertyValueException ex) {
       logger.log(Type.ERROR, ex.getMessage(), ex);
       throw new UnableToCompleteException();
     }
   }
 
   @Override
-  public String createAssignment(TreeLogger logger, ResourceContext context, JMethod method)
+  public String createAssignment(final TreeLogger logger, final ResourceContext context, final JMethod method)
       throws UnableToCompleteException {
 
-    URL[] resources = ResourceGeneratorUtil.findResources(logger, context, method);
+    final URL[] resources = ResourceGeneratorUtil.findResources(logger, context, method);
 
     if (resources.length != 1) {
       logger.log(Type.ERROR, "Exactly one resource must be specified");
@@ -56,23 +59,26 @@ public class ScssBundleGenerator extends AbstractResourceGenerator implements Re
     }
 
     try {
-      PropertyOracle propertyOracle = context.getGeneratorContext().getPropertyOracle();
-      String minifyProperty = propertyOracle.getConfigurationProperty(MINIFY_KEY).getValues()
+      final PropertyOracle propertyOracle = context.getGeneratorContext().getPropertyOracle();
+      final String minifyProperty = propertyOracle.getConfigurationProperty(MINIFY_KEY).getValues()
           .get(0);
-      boolean minify = Boolean.parseBoolean(minifyProperty);
-      
+      final boolean minify = Boolean.parseBoolean(minifyProperty);
+
       String[] customPaths = null;
-      IncludePaths includePaths = method.getAnnotation(IncludePaths.class);
+      final IncludePaths includePaths = method.getAnnotation(IncludePaths.class);
       if (includePaths != null) {
         customPaths = includePaths.value();
       }
 
-      File input = new File(resources[0].toURI());
-      File outputFile = compileScss(logger, input, minify, customPaths);
+      final SassUrlMode urlModeAnnotation = method.getAnnotation(SassUrlMode.class);
+      final UrlMode urlMode = urlModeAnnotation != null ? urlModeAnnotation.value() : null;
 
-      String result = context.deploy(outputFile.toURI().toURL(), "text/css", true);
+      final File input = new File(resources[0].toURI());
+      final File outputFile = this.compileScss(logger, input, minify, customPaths, urlMode);
 
-      SourceWriter sw = new StringSourceWriter();
+      final String result = context.deploy(outputFile.toURI().toURL(), "text/css", true);
+
+      final SourceWriter sw = new StringSourceWriter();
       sw.println("new " + ScssResourcePrototype.class.getName() + "(");
       sw.indent();
       sw.println('"' + method.getName() + "\",");
@@ -82,32 +88,51 @@ public class ScssBundleGenerator extends AbstractResourceGenerator implements Re
 
       return sw.toString();
 
-    } catch (Exception ex) {
+    } catch (final Exception ex) {
       logger.log(TreeLogger.ERROR, ex.getMessage());
       throw new UnableToCompleteException();
     }
   }
 
   private File compileScss(
-      final TreeLogger logger, 
-      final File input, 
-      final boolean minify, 
-      final String[] customPaths) throws Exception {
-    
-    ScssStylesheet stylesheet = ScssStylesheet.get(input.getCanonicalPath(), null,
+      final TreeLogger logger,
+      final File input,
+      final boolean minify,
+      final String[] customPaths,
+      final UrlMode urlMode) throws Exception {
+
+    final ScssStylesheet stylesheet = ScssStylesheet.get(input.getCanonicalPath(), null,
         new SCSSDocumentHandlerImpl(), new GwtErrorHandler(logger, input));
-    
+
     if (customPaths != null) {
       stylesheet.addResolver(new FilesystemResolver(customPaths));
     }
-    
-    stylesheet.compile();
 
-    File tempFile = Files.createTempFile("gwt-sass", ".css").toFile();
+    final com.vaadin.sass.internal.ScssContext.UrlMode mode = this.mapUrlMode(urlMode);
+    stylesheet.compile(mode);
+
+    final File tempFile = Files.createTempFile("gwt-sass", ".css").toFile();
     try (Writer w = new FileWriter(tempFile)) {
       stylesheet.write(w, minify);
     }
     return tempFile;
+  }
+
+  private com.vaadin.sass.internal.ScssContext.UrlMode mapUrlMode(final UrlMode mode) {
+    if (mode == null) {
+      return ScssContext.UrlMode.MIXED;
+    }
+
+    switch (mode) {
+      case ABSOLUTE:
+        return ScssContext.UrlMode.ABSOLUTE;
+      case MIXED:
+        return ScssContext.UrlMode.MIXED;
+      case RELATIVE:
+        return ScssContext.UrlMode.RELATIVE;
+      default:
+        throw new IllegalArgumentException("Unknown url mode " + mode); //$NON-NLS-1$
+    }
   }
 
 }
